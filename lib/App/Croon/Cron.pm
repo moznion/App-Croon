@@ -14,13 +14,28 @@ use constant WEEKDAY_MAP => {
     sat => 6,
 };
 
+use constant MONTH_MAP => {
+    jan => 1,
+    feb => 2,
+    mar => 3,
+    apr => 4,
+    may => 5,
+    jun => 6,
+    jul => 7,
+    aug => 8,
+    sep => 9,
+    oct => 10,
+    nov => 11,
+    dec => 12,
+};
+
 sub translate_from_obj {
     my ($obj) = @_;
 
     my $min     = _validate_min($obj->{min});
     my $hour    = _validate_hour($obj->{hour});
     my $day     = _validate_day($obj->{day});
-    my $month   = $obj->{month};
+    my $month   = _validate_month($obj->{month});
     my $w_day   = _convert_weekday($obj->{w_day});
     my $command = _escape_command($obj->{command});
 
@@ -59,6 +74,14 @@ sub _validate_day {
         croak '[Error] Invalid minutes is specified';
     }
     return $day;
+}
+
+sub _validate_month {
+    my ($month) = @_;
+
+    return '*' unless $month;
+    return $month if $month =~ /^(?:[0-9]|1[0-2])$/;
+    MONTH_MAP->{lcfirst($month)} or croak '[Error] Invalid month is specified';
 }
 
 sub _convert_weekday {

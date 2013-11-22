@@ -161,4 +161,41 @@ subtest 'day' => sub {
     is $cron, '1 1 * 1 1 echo "hello"', 'Not specified day';
 };
 
+subtest 'month' => sub {
+    my $cron;
+
+    $cron = App::Croon::Cron::translate_from_obj({
+        min     => 1,
+        hour    => 1,
+        day     => 1,
+        month   => 'Jan',
+        w_day   => 1,
+        command => 'echo "hello"',
+    });
+    is $cron, '1 1 1 1 1 echo "hello"', 'Specify month as string';
+
+    eval {
+        $cron = App::Croon::Cron::translate_from_obj({
+            min     => 1,
+            hour    => 1,
+            day     => 1,
+            month   => 13,
+            w_day   => 1,
+            command => 'echo "hello"',
+        });
+    };
+    ok $@, 'Over 13 months';
+
+    eval {
+        $cron = App::Croon::Cron::translate_from_obj({
+            min     => 1,
+            hour    => 1,
+            month   => 1,
+            w_day   => 1,
+            command => 'echo "hello"',
+        });
+    };
+    is $cron, '1 1 * 1 1 echo "hello"', 'Not specified day';
+};
+
 done_testing;
