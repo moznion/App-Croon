@@ -134,4 +134,31 @@ subtest 'hour' => sub {
     is $cron, '1 * 1 1 1 echo "hello"', 'Not specified hour';
 };
 
+subtest 'day' => sub {
+    my $cron;
+
+    eval {
+        $cron = App::Croon::Cron::translate_from_obj({
+            min     => 1,
+            hour    => 1,
+            day     => 32,
+            month   => 1,
+            w_day   => 1,
+            command => 'echo "hello"',
+        });
+    };
+    ok $@, 'Over 32 days';
+
+    eval {
+        $cron = App::Croon::Cron::translate_from_obj({
+            min     => 1,
+            hour    => 1,
+            month   => 1,
+            w_day   => 1,
+            command => 'echo "hello"',
+        });
+    };
+    is $cron, '1 1 * 1 1 echo "hello"', 'Not specified day';
+};
+
 done_testing;

@@ -19,7 +19,7 @@ sub translate_from_obj {
 
     my $min     = _validate_min($obj->{min});
     my $hour    = _validate_hour($obj->{hour});
-    my $day     = $obj->{day};
+    my $day     = _validate_day($obj->{day});
     my $month   = $obj->{month};
     my $w_day   = _convert_weekday($obj->{w_day});
     my $command = _escape_command($obj->{command});
@@ -49,6 +49,16 @@ sub _validate_hour {
         croak '[Error] Invalid minutes is specified';
     }
     return $hour;
+}
+
+sub _validate_day {
+    my ($day) = @_;
+
+    return '*' unless $day;
+    if ($day !~ /^(?:[12]?[0-9]|3[01])$/) {
+        croak '[Error] Invalid minutes is specified';
+    }
+    return $day;
 }
 
 sub _convert_weekday {
