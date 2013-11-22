@@ -77,7 +77,7 @@ subtest 'weekday' => sub {
             command => 'echo "hello"',
         });
     };
-    ok $@, 'Not specify weekday';
+    is $cron, '1 1 1 1 * echo "hello"', 'Not specified weekday';
 };
 
 subtest 'min' => sub {
@@ -97,7 +97,6 @@ subtest 'min' => sub {
 
     eval {
         $cron = App::Croon::Cron::translate_from_obj({
-            min     => -1,
             hour    => 1,
             day     => 1,
             month   => 1,
@@ -105,18 +104,34 @@ subtest 'min' => sub {
             command => 'echo "hello"',
         });
     };
-    ok $@, 'Under 0 min';
+    is $cron, '* 1 1 1 1 echo "hello"', 'Not specified min';
+};
+
+subtest 'hour' => sub {
+    my $cron;
 
     eval {
         $cron = App::Croon::Cron::translate_from_obj({
-            hour    => 1,
+            min     => 1,
+            hour    => 24,
             day     => 1,
             month   => 1,
             w_day   => 1,
             command => 'echo "hello"',
         });
     };
-    ok $@, 'Not specify min';
+    ok $@, 'Over 24 hours';
+
+    eval {
+        $cron = App::Croon::Cron::translate_from_obj({
+            min     => 1,
+            day     => 1,
+            month   => 1,
+            w_day   => 1,
+            command => 'echo "hello"',
+        });
+    };
+    is $cron, '1 * 1 1 1 echo "hello"', 'Not specified hour';
 };
 
 done_testing;

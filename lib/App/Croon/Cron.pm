@@ -18,14 +18,14 @@ sub translate_from_obj {
     my ($obj) = @_;
 
     my $min     = _validate_min($obj->{min});
-    my $hour    = $obj->{hour};
+    my $hour    = _validate_hour($obj->{hour});
     my $day     = $obj->{day};
     my $month   = $obj->{month};
     my $w_day   = _convert_weekday($obj->{w_day});
     my $command = _escape_command($obj->{command});
 
     my $cron = sprintf(
-        "%d %d %d %d %d %s",
+        "%s %s %s %s %s %s",
         $min, $hour, $day, $month, $w_day, $command,
     );
     return $cron;
@@ -34,19 +34,29 @@ sub translate_from_obj {
 sub _validate_min {
     my ($min) = @_;
 
-    if (!$min || $min !~ /^[1-5]?[0-9]$/) {
+    return '*' unless $min;
+    if ($min !~ /^[1-5]?[0-9]$/) {
         croak '[Error] Invalid minutes is specified';
     }
     return $min;
 }
 
+sub _validate_hour {
+    my ($hour) = @_;
+
+    return '*' unless $hour;
+    if ($hour !~ /^(?:1?[0-9]|2[0-3])$/) {
+        croak '[Error] Invalid minutes is specified';
+    }
+    return $hour;
+}
+
 sub _convert_weekday {
     my ($w_day) = @_;
 
-    my $error_msg = '[Error] Invalid weekday is specified';
-    croak $error_msg unless $w_day;
+    return '*' unless $w_day;
     return $w_day if $w_day =~ /[0-6]/;
-    WEEKDAY_MAP->{lcfirst($w_day)} or croak $error_msg;
+    WEEKDAY_MAP->{lcfirst($w_day)} or croak '[Error] Invalid weekday is specified';
 }
 
 sub _escape_command {
