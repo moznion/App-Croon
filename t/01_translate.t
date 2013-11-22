@@ -34,16 +34,6 @@ subtest 'weekday' => sub {
     });
     is $cron, '1 1 1 1 1 echo "hello"', 'First character is upper case';
 
-    $cron = App::Croon::Cron::translate_from_obj({
-        min     => 1,
-        hour    => 1,
-        day     => 1,
-        month   => 1,
-        w_day   => 'mon',
-        command => 'echo "hello"',
-    });
-    is $cron, '1 1 1 1 1 echo "hello"', 'All characters are lower case';
-
     eval {
         $cron = App::Croon::Cron::translate_from_obj({
             min     => 1,
