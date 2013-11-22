@@ -17,7 +17,7 @@ use constant WEEKDAY_MAP => {
 sub translate_from_obj {
     my ($obj) = @_;
 
-    my $min     = $obj->{min};
+    my $min     = _validate_min($obj->{min});
     my $hour    = $obj->{hour};
     my $day     = $obj->{day};
     my $month   = $obj->{month};
@@ -29,6 +29,15 @@ sub translate_from_obj {
         $min, $hour, $day, $month, $w_day, $command,
     );
     return $cron;
+}
+
+sub _validate_min {
+    my ($min) = @_;
+
+    if (!$min || $min !~ /^[1-5]?[0-9]$/) {
+        croak '[Error] Invalid minutes is specified';
+    }
+    return $min;
 }
 
 sub _convert_weekday {
