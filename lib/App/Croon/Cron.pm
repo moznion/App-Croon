@@ -40,6 +40,21 @@ sub translate_from_obj {
     my $command = _escape_command($obj->{command});
     my $name    = $obj->{name} or croak '[Error] Name is not specified';
 
+    # log
+    my $stdout_log = $obj->{stdout_log};
+    my $stderr_log = $obj->{stderr_log};
+    if ($stdout_log && $stderr_log) {
+        $command = ($stdout_log eq $stderr_log) ? "$command >$stdout_log 2>&1"
+                                                : "$command 1>$stdout_log 2>$stderr_log";
+    }
+    elsif ($stderr_log) {
+        $command = "$command 2>$stderr_log";
+    }
+    elsif ($stdout_log) {
+        $command = "$command 1>$stdout_log";
+    }
+
+    # exclusive by time range
     if (my $exclusion = $obj->{exclusion}) {
         my $from = $exclusion->{from};
         my $to = $exclusion->{to};
