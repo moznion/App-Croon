@@ -48,6 +48,7 @@ sub remove_cron_row {
 sub backup_cron {
     my $cron_bak = `crontab -l`;
 
+    return '' unless $cron_bak;
     open my $fh, '>', catfile(getcwd, 'crontab.bak');
     print $fh $cron_bak;
     return $cron_bak;
