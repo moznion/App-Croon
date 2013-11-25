@@ -32,8 +32,13 @@ use constant MONTH_MAP => {
 sub translate_from_obj {
     my ($obj) = @_;
 
-    my $min     = _validate_min($obj->{min});
-    my $hour    = _validate_hour($obj->{hour});
+    my $min  = $obj->{min};
+    my $hour = $obj->{hour};
+    $min  //= '*';
+    $hour //= '*';
+    _validate_min($min);
+    _validate_hour($hour);
+
     my $day     = _validate_day($obj->{day});
     my $month   = _validate_month($obj->{month});
     my $w_day   = _convert_weekday($obj->{w_day});
@@ -75,8 +80,7 @@ EOC
 sub _validate_min {
     my ($min) = @_;
 
-    return '*' unless $min;
-    if ($min !~ /^[1-5]?[0-9]$/) {
+    if ($min ne '*' && $min !~ /^[1-5]?[0-9]$/) {
         croak '[Error] Invalid minutes is specified';
     }
     return $min;
@@ -85,8 +89,7 @@ sub _validate_min {
 sub _validate_hour {
     my ($hour) = @_;
 
-    return '*' unless $hour;
-    if ($hour !~ /^(?:1?[0-9]|2[0-3])$/) {
+    if ($hour ne '*' && $hour !~ /^(?:1?[0-9]|2[0-3])$/) {
         croak '[Error] Invalid minutes is specified';
     }
     return $hour;
