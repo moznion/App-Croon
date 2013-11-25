@@ -34,10 +34,11 @@ sub translate_from_obj {
 
     my $min  = $obj->{min};
     my $hour = $obj->{hour};
-    $min  //= '*';
-    $hour //= '*';
-    _validate_min($min);
-    _validate_hour($hour);
+    if (my $time = $obj->{time}) {
+        ($hour, $min) = map { int $_ } split(/:/, $time);
+    }
+    _validate_min($min //= '*');
+    _validate_hour($hour //= '*');
 
     my $day     = _validate_day($obj->{day});
     my $month   = _validate_month($obj->{month});
