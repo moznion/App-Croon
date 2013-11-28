@@ -1,0 +1,24 @@
+[
+    {
+        'name'       => 'say hello',
+        'min'        => '0',
+        'hour'       => 'every 2',
+        'day'        => '*',
+        'month'      => '*',
+        'w_day'      => '*',
+        'command'    => 'echo "hello"',
+        'exclusion'  => {
+            'from' => '20:00:00',
+            'to'   => '23:59:59',
+        },
+        'stdout_log' => '/tmp/logs/stdout',
+        'stderr_log' => '/tmp/logs/stderr',
+    },
+    {
+        'name'       => 'say goodnight',
+        'hour'       => '0',
+        'command'    => 'echo "goodnight"',
+        'stdout_log' => '/tmp/logs/log',
+        'stderr_log' => '/tmp/logs/log',
+    },
+];

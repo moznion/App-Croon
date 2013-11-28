@@ -1,0 +1,41 @@
+#!perl
+
+use strict;
+use warnings;
+use utf8;
+use App::Croon;
+use Carp;
+
+my $cmd = shift;
+
+if ($cmd eq 'apply') {
+    apply_or_gen(shift, 'apply');
+}
+elsif ($cmd eq 'generate') {
+    apply_or_gen(shift, 'generate');
+}
+elsif ($cmd eq 'remove') {
+    my $cron = App::Croon::remove_cron_row(shift);
+    print $cron;
+}
+elsif ($cmd eq 'backup') {
+    App::Croon::backup_cron();
+}
+
+sub apply_or_gen {
+    my ($file, $dealing) = @_;
+
+    croak "[Error] Can't found '$file'" unless -s $file;
+    my $objects = do $file;
+
+    my $cron;
+    if ($dealing eq 'apply') {
+        $cron = App::Croon::write_cron($objects);
+    }
+    elsif ($dealing eq 'generate') {
+        $cron = App::Croon::generate_cron($objects);
+    }
+
+    croak "[Error] Can't generate the crontab" unless $cron;
+    print $cron
+}
