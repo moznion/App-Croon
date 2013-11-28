@@ -87,7 +87,7 @@ sub _escape_command {
 sub _format {
     my ($date_or_time) = @_;
 
-    return '*' unless $date_or_time;
+    return '*' unless defined($date_or_time);
     if (my ($tick) = ($date_or_time  =~ /every (\d+)/)) {
         $date_or_time = "*/$tick";
     }
