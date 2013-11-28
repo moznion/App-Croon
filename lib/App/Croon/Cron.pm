@@ -37,12 +37,12 @@ sub translate_from_obj {
     if (my $time = $obj->{time}) {
         ($hour, $min) = map { int $_ } split(/:/, $time);
     }
-    _validate_min($min //= '*');
-    _validate_hour($hour //= '*');
+    $min  ||= '*';
+    $hour ||= '*';
 
-    my $day     = _validate_day($obj->{day});
-    my $month   = _validate_month($obj->{month});
-    my $w_day   = _convert_weekday($obj->{w_day});
+    my $day     = $obj->{day} || '*';
+    my $month   = MONTH_MAP->{lcfirst($obj->{month})}   || $obj->{month} || '*';
+    my $w_day   = WEEKDAY_MAP->{lcfirst($obj->{w_day})} || $obj->{w_day} || '*';
     my $command = _escape_command($obj->{command});
     my $name    = $obj->{name} or croak '[Error] Name is not specified';
 
@@ -76,50 +76,6 @@ sub translate_from_obj {
 # }}} %s
 EOC
     return $cron;
-}
-
-sub _validate_min {
-    my ($min) = @_;
-
-    if ($min ne '*' && $min !~ /^[1-5]?[0-9]$/) {
-        croak '[Error] Invalid minutes is specified';
-    }
-    return $min;
-}
-
-sub _validate_hour {
-    my ($hour) = @_;
-
-    if ($hour ne '*' && $hour !~ /^(?:1?[0-9]|2[0-3])$/) {
-        croak '[Error] Invalid minutes is specified';
-    }
-    return $hour;
-}
-
-sub _validate_day {
-    my ($day) = @_;
-
-    return '*' unless $day;
-    if ($day !~ /^(?:[12]?[0-9]|3[01])$/) {
-        croak '[Error] Invalid minutes is specified';
-    }
-    return $day;
-}
-
-sub _validate_month {
-    my ($month) = @_;
-
-    return '*' unless $month;
-    return $month if $month =~ /^(?:[0-9]|1[0-2])$/;
-    MONTH_MAP->{lcfirst($month)} or croak '[Error] Invalid month is specified';
-}
-
-sub _convert_weekday {
-    my ($w_day) = @_;
-
-    return '*' unless $w_day;
-    return $w_day if $w_day =~ /[0-6]/;
-    WEEKDAY_MAP->{lcfirst($w_day)} or croak '[Error] Invalid weekday is specified';
 }
 
 sub _escape_command {

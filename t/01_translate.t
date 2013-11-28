@@ -57,49 +57,10 @@ EOC
 1 1 1 1 * echo "hello"
 # }}} weekday
 EOC
-
-    eval {
-        $cron = App::Croon::Cron::translate_from_obj({
-            name    => 'weekday',
-            min     => 1,
-            hour    => 1,
-            day     => 1,
-            month   => 1,
-            w_day   => 7,
-            command => 'echo "hello"',
-        });
-    };
-    ok $@, 'Invalid weekday is specified as number';
-
-    eval {
-        $cron = App::Croon::Cron::translate_from_obj({
-            name    => 'weekday',
-            min     => 1,
-            hour    => 1,
-            day     => 1,
-            month   => 1,
-            w_day   => 'Invalid',
-            command => 'echo "hello"',
-        });
-    };
-    ok $@, 'Invalid weekday is specified as string';
 };
 
 subtest 'min' => sub {
     my $cron;
-
-    eval {
-        $cron = App::Croon::Cron::translate_from_obj({
-            name    => 'min',
-            min     => 60,
-            hour    => 1,
-            day     => 1,
-            month   => 1,
-            w_day   => 1,
-            command => 'echo "hello"',
-        });
-    };
-    ok $@, 'Over 60 min';
 
     $cron = App::Croon::Cron::translate_from_obj({
         name    => 'min',
@@ -119,19 +80,6 @@ EOC
 subtest 'hour' => sub {
     my $cron;
 
-    eval {
-        $cron = App::Croon::Cron::translate_from_obj({
-            name    => 'hour',
-            min     => 1,
-            hour    => 24,
-            day     => 1,
-            month   => 1,
-            w_day   => 1,
-            command => 'echo "hello"',
-        });
-    };
-    ok $@, 'Over 24 hours';
-
     $cron = App::Croon::Cron::translate_from_obj({
         name    => 'hour',
         min     => 1,
@@ -149,19 +97,6 @@ EOC
 
 subtest 'day' => sub {
     my $cron;
-
-    eval {
-        $cron = App::Croon::Cron::translate_from_obj({
-            name    => 'day',
-            min     => 1,
-            hour    => 1,
-            day     => 32,
-            month   => 1,
-            w_day   => 1,
-            command => 'echo "hello"',
-        });
-    };
-    ok $@, 'Over 32 days';
 
     $cron = App::Croon::Cron::translate_from_obj({
         name    => 'day',
@@ -209,19 +144,6 @@ EOC
 1 1 * 1 1 echo "hello"
 # }}} month
 EOC
-
-    eval {
-        $cron = App::Croon::Cron::translate_from_obj({
-            name    => 'month',
-            min     => 1,
-            hour    => 1,
-            day     => 1,
-            month   => 13,
-            w_day   => 1,
-            command => 'echo "hello"',
-        });
-    };
-    ok $@, 'Over 13 months';
 };
 
 subtest 'Sepcify `min` and `hour` as time format' => sub {
