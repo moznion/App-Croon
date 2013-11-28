@@ -183,4 +183,32 @@ subtest 'tick' => sub {
 EOC
 };
 
+subtest 'exceptional' => sub {
+    eval {
+        my $cron = App::Croon::Cron::translate_from_obj({
+            name    => '',
+            min     => 1,
+            hour    => 1,
+            day     => 1,
+            month   => 1,
+            w_day   => 1,
+            command => 'touch ~/right_$(date +%Y%m%d).txt',
+        });
+    };
+    ok $@, 'Name is required';
+
+    eval {
+        my $cron = App::Croon::Cron::translate_from_obj({
+            name    => 'name',
+            min     => 1,
+            hour    => 1,
+            day     => 1,
+            month   => 1,
+            w_day   => 1,
+            command => '',
+        });
+    };
+    ok $@, 'Command is required';
+};
+
 done_testing;
