@@ -32,17 +32,14 @@ use constant MONTH_MAP => {
 sub translate_from_obj {
     my ($obj) = @_;
 
-    my $min  = $obj->{min};
-    my $hour = $obj->{hour};
+    my $min  = _format($obj->{min});
+    my $hour = _format($obj->{hour});
     if (my $time = $obj->{time}) {
         ($hour, $min) = map { int $_ } split(/:/, $time);
     }
-    $min  ||= '*';
-    $hour ||= '*';
-
-    my $day     = $obj->{day} || '*';
-    my $month   = MONTH_MAP->{lcfirst($obj->{month})}   || $obj->{month} || '*';
-    my $w_day   = WEEKDAY_MAP->{lcfirst($obj->{w_day})} || $obj->{w_day} || '*';
+    my $day     = _format($obj->{day});
+    my $month   = ( $obj->{month} && MONTH_MAP->{lcfirst($obj->{month})} ) || _format($obj->{month});
+    my $w_day   = ( $obj->{w_day} && WEEKDAY_MAP->{lcfirst($obj->{w_day})} ) || _format($obj->{w_day});
     my $command = _escape_command($obj->{command});
     my $name    = $obj->{name} or croak '[Error] Name is not specified';
 
@@ -85,6 +82,16 @@ sub _escape_command {
 
     $command =~ s/%/\\%/g;
     return $command;
+}
+
+sub _format {
+    my ($date_or_time) = @_;
+
+    return '*' unless $date_or_time;
+    if (my ($tick) = ($date_or_time  =~ /every (\d+)/)) {
+        $date_or_time = "*/$tick";
+    }
+    return $date_or_time;
 }
 
 1;
