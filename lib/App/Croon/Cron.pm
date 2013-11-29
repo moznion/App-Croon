@@ -64,7 +64,7 @@ sub translate_from_obj {
         croak '[Error] Invalid exclusion date range is specified' if (!$from || !$to);
         $from =~ s/://g;
         $to   =~ s/://g;
-        $command = 'now=`date +"%H%M%S"`' . sprintf(' && if ([ %s -le $now ] && [ $now -le %s ]) ; then : ; else %s ; fi', $from, $to, $command);
+        $command = 'now=`date +"\%H\%M\%S"`' . sprintf(' && if ([ %s -le $now ] && [ $now -le %s ]) ; then : ; else %s ; fi', $from, $to, $command);
     }
 
     my $cron = sprintf(<<'EOC', $name, $min, $hour, $day, $month, $w_day, $command, $name);
